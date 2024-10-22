@@ -1,0 +1,23 @@
+debug: false
+
+logging:
+  level:
+    dh.javaproject.testdata: debug
+    org.springframework.web.servlet: debug
+
+spring:
+  application.name: test-data
+
+  jpa:
+    open-in-view: false
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
+
