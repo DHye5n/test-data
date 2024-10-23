@@ -15,7 +15,7 @@ public enum MockDataType {
     DATETIME(Set.of("from", "to"), null),
     ENUM(Set.of("elements"), null),
 
-    SENTENCE(Set.of("minSentences", "maxSententces"), STRING),
+    SENTENCE(Set.of("minSentences", "maxSentences"), STRING),
     PARAGRAPH(Set.of("minParagraph", "maxParagraph"), STRING),
     UUID(Set.of(), STRING),
     EMAIL(Set.of(), STRING),
