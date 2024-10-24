@@ -20,6 +20,13 @@ import java.util.Set;
 
 @Getter
 @ToString(callSuper = true)
+@Table(
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "schemaName"})},
+        indexes = {
+                @Index(columnList = "createdAt"),
+                @Index(columnList = "modifiedAt")
+        }
+)
 @Entity
 public class TableSchema extends AuditingFields {
 
@@ -28,13 +35,18 @@ public class TableSchema extends AuditingFields {
     private Long id;
 
     @ToString.Exclude
+    @OrderBy("fieldOrder ASC")
     @OneToMany(mappedBy = "tableSchema", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<SchemaField> schemaFields = new LinkedHashSet<>();
 
     @Setter
+    @Column(nullable = false)
     private String schemaName;
+
     @Setter
+    @Column(nullable = false)
     private String userId;
+
     @Setter
     private LocalDateTime exportedAt;
 

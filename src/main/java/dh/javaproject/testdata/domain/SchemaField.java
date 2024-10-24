@@ -31,12 +31,16 @@ public class SchemaField extends AuditingFields {
     @Column(nullable = false)
     @Setter
     private String fieldName;
+
     @Column(nullable = false)
     @Setter
+    @Enumerated(EnumType.STRING)
     private MockDataType mockDataType;
+
     @Column(nullable = false)
     @Setter
     private Integer fieldOrder;
+
     @Column(nullable = false)
     @Setter
     private Integer blankPercent;
