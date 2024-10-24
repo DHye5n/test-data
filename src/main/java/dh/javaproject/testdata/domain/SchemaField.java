@@ -46,6 +46,7 @@ public class SchemaField extends AuditingFields {
     private Integer blankPercent;
 
     private String typeOptionJson;  // Json format field
+
     private String forceValue;
 
     protected SchemaField() {}
