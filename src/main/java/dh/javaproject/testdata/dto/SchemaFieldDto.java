@@ -5,6 +5,10 @@ import dh.javaproject.testdata.domain.constant.MockDataType;
 
 import java.time.LocalDateTime;
 
+/**
+ *   DTO for {@link SchemaField}
+ */
+
 public record SchemaFieldDto(
 
         Long id,
