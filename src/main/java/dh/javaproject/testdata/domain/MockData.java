@@ -52,7 +52,7 @@ public class MockData {
         if (this == o) return true;
         if (!(o instanceof MockData that)) return false;
 
-        if (that.getId() == null) {
+        if (this.getId() == null) {
             return Objects.equals(this.getMockDataType(), that.getMockDataType()) &&
                     Objects.equals(this.getMockDataValue(), that.getMockDataValue());
         }

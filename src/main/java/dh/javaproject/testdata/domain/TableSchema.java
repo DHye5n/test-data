@@ -88,7 +88,7 @@ public class TableSchema extends AuditingFields {
         if (this == o) return true;
         if (!(o instanceof TableSchema that)) return false;
 
-        if (that.getId() == null) {
+        if (this.getId() == null) {
             return Objects.equals(getSchemaFields(), that.getSchemaFields()) &&
                     Objects.equals(getSchemaName(), that.getSchemaName()) &&
                     Objects.equals(getUserId(), that.getUserId()) &&
