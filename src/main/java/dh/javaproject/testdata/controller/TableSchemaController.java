@@ -1,10 +1,14 @@
 package dh.javaproject.testdata.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dh.javaproject.testdata.domain.constant.ExportFileType;
 import dh.javaproject.testdata.domain.constant.MockDataType;
+import dh.javaproject.testdata.dto.request.TableSchemaExportRequest;
 import dh.javaproject.testdata.dto.request.TableSchemaRequest;
 import dh.javaproject.testdata.dto.response.SchemaFieldResponse;
 import dh.javaproject.testdata.dto.response.TableSchemaResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,8 +21,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Arrays;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Controller
 public class TableSchemaController {
+
+    private final ObjectMapper mapper;
 
     @GetMapping("/table-schema")
     public String tableSchema(Model model) {
@@ -59,12 +66,14 @@ public class TableSchemaController {
     }
 
     @GetMapping("/table-schema/export")
-    public ResponseEntity<String> exportTableSchema(TableSchemaRequest tableSchemaRequest) {
+    public ResponseEntity<String> exportTableSchema(TableSchemaExportRequest tableSchemaExportRequest) {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=table-schema.txt")
-                .body("download complete!");
+                .body(json(tableSchemaExportRequest));
     }
+
+
 
     private TableSchemaResponse defaultTableSchema() {
         return new TableSchemaResponse(
@@ -76,5 +85,13 @@ public class TableSchemaController {
                         new SchemaFieldResponse("fieldName3", MockDataType.NAME, 3, 20, null, null)
                 )
         );
+    }
+
+    private String json(Object object) {
+        try {
+            return mapper.writeValueAsString(object);
+        } catch (JsonProcessingException jpe) {
+            throw new RuntimeException(jpe);
+        }
     }
 }
