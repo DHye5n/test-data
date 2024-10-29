@@ -43,8 +43,6 @@ public class TableSchemaController {
         return "table-schema";
     }
 
-
-
     @PostMapping("/table-schema")
     public String createOrUpdateTableSchema(
             TableSchemaRequest tableSchemaRequest,
@@ -65,8 +63,6 @@ public class TableSchemaController {
         return "my-schemas";
     }
 
-
-
     @PostMapping("/table-schema/my-schemas/{schemaName}")
     public String deleteMySchema
             (@PathVariable(name = "schemaName") String schemaName,
@@ -82,8 +78,6 @@ public class TableSchemaController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=table-schema.txt")
                 .body(json(tableSchemaExportRequest));
     }
-
-
 
     private TableSchemaResponse defaultTableSchemas(String schemaName) {
         return new TableSchemaResponse(
