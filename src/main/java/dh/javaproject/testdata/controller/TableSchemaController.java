@@ -9,10 +9,12 @@ import dh.javaproject.testdata.dto.request.TableSchemaRequest;
 import dh.javaproject.testdata.dto.response.SchemaFieldResponse;
 import dh.javaproject.testdata.dto.response.SimpleTableSchemaResponse;
 import dh.javaproject.testdata.dto.response.TableSchemaResponse;
+import dh.javaproject.testdata.dto.security.GithubUser;
 import dh.javaproject.testdata.service.TableSchemaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,9 +35,12 @@ public class TableSchemaController {
 
     @GetMapping("/table-schema")
     public String tableSchema(Model model,
-                              @RequestParam(name = "schemaName", required = false) String schemaName) {
+                              @RequestParam(name = "schemaName", required = false) String schemaName,
+                              @AuthenticationPrincipal GithubUser githubUser) {
 
-        TableSchemaResponse tableSchema = defaultTableSchemas(schemaName);
+        TableSchemaResponse tableSchema = (githubUser != null && schemaName != null) ?
+                TableSchemaResponse.fromDto(tableSchemaService.loadMySchema(githubUser.id(), schemaName))
+                : defaultTableSchemas(schemaName);
 
         model.addAttribute("tableSchema", tableSchema);
         model.addAttribute("mockDataTypes", MockDataType.toObjects());
@@ -48,17 +52,25 @@ public class TableSchemaController {
     @PostMapping("/table-schema")
     public String createOrUpdateTableSchema(
             TableSchemaRequest tableSchemaRequest,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal GithubUser githubUser
     ) {
+        tableSchemaService.saveMySchema(tableSchemaRequest.toDto(githubUser.id()));
+
         redirectAttributes.addFlashAttribute("tableSchemaRequest", tableSchemaRequest);
 
         return "redirect:/table-schema";
     }
 
     @GetMapping("/table-schema/my-schemas")
-    public String mySchemas(Model model) {
+    public String mySchemas(Model model,
+                            @AuthenticationPrincipal GithubUser githubUser) {
 
-        List<SimpleTableSchemaResponse> tableSchemas = mySampleSchemas();
+        List<SimpleTableSchemaResponse> tableSchemas =
+                tableSchemaService.loadMySchemas(githubUser.id())
+                        .stream()
+                        .map(SimpleTableSchemaResponse::fromDto)
+                        .toList();
 
         model.addAttribute("tableSchemas", tableSchemas);
 
@@ -91,14 +103,6 @@ public class TableSchemaController {
                         new SchemaFieldResponse("age", MockDataType.NAME, 3, 20, null, null),
                         new SchemaFieldResponse("my_car", MockDataType.CAR, 3, 50, null, null)
                 )
-        );
-    }
-
-    private static List<SimpleTableSchemaResponse> mySampleSchemas() {
-        return List.of(
-                new SimpleTableSchemaResponse("schema_name1", "dh", LocalDate.of(2024, 1, 1).atStartOfDay()),
-                new SimpleTableSchemaResponse("schema_name2", "dh", LocalDate.of(2024, 2, 2).atStartOfDay()),
-                new SimpleTableSchemaResponse("schema_name3", "dh", LocalDate.of(2024, 3, 3).atStartOfDay())
         );
     }
 

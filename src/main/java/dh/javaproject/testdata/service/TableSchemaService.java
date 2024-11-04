@@ -2,6 +2,7 @@ package dh.javaproject.testdata.service;
 
 import dh.javaproject.testdata.dto.TableSchemaDto;
 import dh.javaproject.testdata.repository.TableSchemaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,5 +27,16 @@ public class TableSchemaService {
     public Page<TableSchemaDto> loadMySchemas(String userId, Pageable pageable) {
         return tableSchemaRepository.findByUserId(userId, pageable)
                 .map(TableSchemaDto::fromEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public TableSchemaDto loadMySchema(String userId, String schemaName) {
+        return tableSchemaRepository.findByUserIdAndSchemaName(userId, schemaName)
+                .map(TableSchemaDto::fromEntity)
+                .orElseThrow(() -> new EntityNotFoundException("테이블 스키마가 없습니다 - userId: " + userId + ", schemaName: " + schemaName));
+    }
+
+    public void saveMySchema(TableSchemaDto dto) {
+        tableSchemaRepository.save(dto.createEntity());
     }
 }
