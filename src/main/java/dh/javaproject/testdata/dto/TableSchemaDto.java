@@ -79,4 +79,18 @@ public record TableSchemaDto(
         return entity;
     }
 
+    public TableSchema updateEntity(TableSchema entity) {
+
+        if (schemaName != null) { entity.setSchemaName(schemaName); }
+        if (userId != null) { entity.setUserId(userId); }
+        entity.setExportedAt(exportedAt);
+
+        if (schemaFields != null) {
+            entity.clearSchemaFields();
+            entity.addSchemaFields(schemaFields.stream().map(SchemaFieldDto::createEntity).toList());
+        }
+
+        return entity;
+    }
+
 }
