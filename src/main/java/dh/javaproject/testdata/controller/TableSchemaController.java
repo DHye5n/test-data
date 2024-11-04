@@ -9,6 +9,7 @@ import dh.javaproject.testdata.dto.request.TableSchemaRequest;
 import dh.javaproject.testdata.dto.response.SchemaFieldResponse;
 import dh.javaproject.testdata.dto.response.SimpleTableSchemaResponse;
 import dh.javaproject.testdata.dto.response.TableSchemaResponse;
+import dh.javaproject.testdata.service.TableSchemaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ import java.util.List;
 public class TableSchemaController {
 
     private final ObjectMapper mapper;
+    private final TableSchemaService tableSchemaService;
 
     @GetMapping("/table-schema")
     public String tableSchema(Model model,
